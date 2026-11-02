@@ -296,4 +296,20 @@ Notas de lectura:
 
 El proveedor/modelo de todas las entradas anteriores es **DeepSeek V4.1 Flash Free (OpenCode)**, tal como figura en cada registro.
 
+## 2026-11-02 11:31 — Despliegue en GitHub Pages
+
+- **Proveedor y modelo:** DeepSeek V4.1 Flash Free (OpenCode)
+- **Agente:** Build
+- **Prompt resumido:** Registrar en `BITACORA.md` el despliegue del repositorio y del sitio, el resultado del workflow y la verificación visual hecha por el usuario; corregir enlaces con el nombre anterior del repositorio en `README.md` y `BITACORA.md`; hacer un commit local sin push.
+- **Qué se hizo:**
+  - Repositorio: https://github.com/maicooljt8a-ops/Mapa-3D-bogota
+  - Sitio publicado: https://maicooljt8a-ops.github.io/Mapa-3D-bogota/
+  - Workflow **Desplegar en GitHub Pages** (push a `main`): conclusión **success** (en verde). Ejecución: https://github.com/maicooljt8a-ops/Mapa-3D-bogota/actions/runs/41481693225
+  - Comprobación del sitio por HTTP: respuesta **200**.
+  - Verificación visual: la hizo el usuario en el navegador; el agente no abrió navegador ni tomó capturas.
+  - Enlaces revisados en `README.md` y `BITACORA.md`: no se encontraron enlaces con el nombre anterior del repositorio; se añadieron en `README.md` los enlaces correctos del repositorio y del sitio.
+  - Commit local: `Registrar despliegue`.
+- **Problemas encontrados:** `gh` no está instalado en el equipo; el estado del workflow se obtuvo de la API pública de GitHub Actions.
+- **Pendientes:** Ninguno.
+
 

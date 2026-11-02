@@ -1,0 +1,81 @@
+{
+  "sistema": "x=este, y=norte, z=altura; GLB exportado con Y-up",
+  "bloques": {
+    "SE": {
+      "archivo": "models/bloques/bloque_se.glb",
+      "origen": {
+        "lat": 4.61,
+        "lon": -74.06,
+        "z_m": 2801.65
+      },
+      "caja": {
+        "lat_min": 4.58,
+        "lat_max": 4.64,
+        "lon_min": -74.08,
+        "lon_max": -74.04
+      },
+      "edificios": 47667,
+      "edificios_reales": 1354,
+      "edificios_estimadas": 46313,
+      "tamano_bytes": 1446864,
+      "tamano_mb": 1.38
+    },
+    "SW": {
+      "archivo": "models/bloques/bloque_sw.glb",
+      "origen": {
+        "lat": 4.61,
+        "lon": -74.1,
+        "z_m": 2564.0
+      },
+      "caja": {
+        "lat_min": 4.58,
+        "lat_max": 4.64,
+        "lon_min": -74.12,
+        "lon_max": -74.08
+      },
+      "edificios": 153902,
+      "edificios_reales": 330,
+      "edificios_estimadas": 153572,
+      "tamano_bytes": 4065260,
+      "tamano_mb": 3.88
+    },
+    "NW": {
+      "archivo": "models/bloques/bloque_nw.glb",
+      "origen": {
+        "lat": 4.67,
+        "lon": -74.1,
+        "z_m": 2554.77
+      },
+      "caja": {
+        "lat_min": 4.64,
+        "lat_max": 4.7,
+        "lon_min": -74.12,
+        "lon_max": -74.08
+      },
+      "edificios": 133768,
+      "edificios_reales": 1124,
+      "edificios_estimadas": 132644,
+      "tamano_bytes": 3532212,
+      "tamano_mb": 3.37
+    },
+    "NE": {
+      "archivo": "models/bloques/bloque_ne.glb",
+      "origen": {
+        "lat": 4.67,
+        "lon": -74.06,
+        "z_m": 2556.56
+      },
+      "caja": {
+        "lat_min": 4.64,
+        "lat_max": 4.7,
+        "lon_min": -74.08,
+        "lon_max": -74.04
+      },
+      "edificios": 98620,
+      "edificios_reales": 1776,
+      "edificios_estimadas": 96844,
+      "tamano_bytes": 2834472,
+      "tamano_mb": 2.7
+    }
+  }
+}

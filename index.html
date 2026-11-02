@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bogotá 3D · Mapa interactivo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="mapa"></div>
+
+  <aside id="panel" aria-label="Capas del mapa">
+    <header class="panel-encabezado">
+      <h1>Bogotá 3D</h1>
+      <p>Mapa interactivo de la ciudad</p>
+    </header>
+
+    <section class="panel-seccion">
+      <h2>Capas</h2>
+      <label class="campo"><input type="checkbox" id="capa-edificios" checked> Edificios 3D</label>
+      <label class="campo"><input type="checkbox" id="capa-terreno" checked> Terreno 3D</label>
+      <label class="campo"><input type="checkbox" id="capa-relieve" checked> Relieve</label>
+      <label class="campo"><input type="checkbox" id="capa-sitios" checked> Sitios de interés</label>
+    </section>
+
+    <section class="panel-seccion">
+      <h2>Bloques 3D</h2>
+      <label class="campo"><input type="checkbox" data-bloque="SW"> SW <span class="bloque-estado" data-estado="SW"></span></label>
+      <label class="campo"><input type="checkbox" data-bloque="SE" checked> SE <span class="bloque-estado" data-estado="SE"></span></label>
+      <label class="campo"><input type="checkbox" data-bloque="NW"> NW <span class="bloque-estado" data-estado="NW"></span></label>
+      <label class="campo"><input type="checkbox" data-bloque="NE"> NE <span class="bloque-estado" data-estado="NE"></span></label>
+      <p class="panel-aviso">Alturas aproximadas, estimadas a partir de la huella de cada edificio.</p>
+      <label class="campo campo-deslizador" for="ajuste-edificios">
+        <span>Ajuste vertical de edificios</span>
+        <output id="valor-ajuste" for="ajuste-edificios">0 m</output>
+      </label>
+      <input type="range" id="ajuste-edificios" min="-100" max="100" step="1" value="0">
+    </section>
+
+    <section class="panel-seccion">
+      <label class="campo campo-deslizador" for="exageracion">
+        <span>Exageración del terreno</span>
+        <output id="valor-exageracion" for="exageracion">1.5×</output>
+      </label>
+      <input type="range" id="exageracion" min="0.5" max="3" step="0.1" value="1.5">
+    </section>
+
+    <p class="panel-nota">Haz clic en los puntos para ver información de cada sitio.</p>
+  </aside>
+
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5/dist/maplibre-gl.js"></script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
+

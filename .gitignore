@@ -1,0 +1,17 @@
+﻿# Entornos y caché
+.venv/
+__pycache__/
+*.pyc
+
+# Datos y scripts de trabajo
+data/
+scripts/
+renders/
+Modelfile
+
+# Blender
+*.blend
+*.blend1
+
+# Sitio generado por GitHub Actions
+_site/

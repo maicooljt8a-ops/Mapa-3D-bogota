@@ -38,7 +38,7 @@
       <label class="campo"><input type="checkbox" data-bloque="SE" checked> SE <span class="bloque-estado" data-estado="SE"></span></label>
       <label class="campo"><input type="checkbox" data-bloque="NW"> NW <span class="bloque-estado" data-estado="NW"></span></label>
       <label class="campo"><input type="checkbox" data-bloque="NE"> NE <span class="bloque-estado" data-estado="NE"></span></label>
-      <p class="panel-aviso">Alturas aproximadas, estimadas a partir de la huella de cada edificio.</p>
+      <p class="panel-aviso">La mayoría de las alturas son estimadas a partir de la huella y los niveles; solo algunas provienen de datos reales.</p>
       <label class="campo campo-deslizador" for="ajuste-edificios">
         <span>Ajuste vertical de edificios</span>
         <output id="valor-ajuste" for="ajuste-edificios">0 m</output>
@@ -56,6 +56,11 @@
 
     <p class="panel-nota">Haz clic en los puntos para ver información de cada sitio.</p>
   </aside>
+
+  <div id="estado-mapa" class="estado-mapa" role="status" aria-live="polite" hidden>
+    <span id="estado-mapa-texto"></span>
+    <button id="cerrar-estado-mapa" class="estado-mapa-cerrar" type="button" aria-label="Cerrar aviso" hidden>×</button>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5/dist/maplibre-gl.js"></script>
   <script type="module" src="main.js"></script>

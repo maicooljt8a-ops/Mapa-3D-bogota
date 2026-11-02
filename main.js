@@ -5,6 +5,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 const CENTRO = [-74.0758, 4.5981];
 const EXAGERACION_INICIAL = 1.5;
 const URL_INDICE_BLOQUES = 'models/bloques/index.json';
+const URL_SITIOS = 'layers/sitios.geojson';
 const URL_DECODIFICADOR_DRACO = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/';
 const ORDEN_BLOQUES = ['SW', 'SE', 'NW', 'NE'];
 const COLOR_EDIFICIOS = 0xfaf6ec;
@@ -26,8 +27,8 @@ mapa.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bot
 mapa.addControl(new maplibregl.ScaleControl({ unit: 'metric', maxWidth: 120 }), 'bottom-left');
 mapa.addControl(
   new maplibregl.AttributionControl({
-    compact: true,
-    customAttribution: '© OpenFreeMap · © OpenStreetMap contributors · Elevación: AWS Terrain Tiles'
+    compact: false,
+    customAttribution: '© OpenFreeMap · © OpenStreetMap contributors · Edificios: Overture Maps · Elevación: AWS Terrain Tiles'
   }),
   'bottom-right'
 );
@@ -40,6 +41,52 @@ function escapar(texto) {
     '"': '&quot;',
     "'": '&#39;'
   }[caracter]));
+}
+
+let estadoMapaEsError = false;
+
+function mostrarEstadoMapa(texto, error = false) {
+  const aviso = document.getElementById('estado-mapa');
+  const contenido = document.getElementById('estado-mapa-texto');
+  const cerrar = document.getElementById('cerrar-estado-mapa');
+  if (!aviso || !contenido) {
+    return;
+  }
+
+  estadoMapaEsError = Boolean(error);
+  contenido.textContent = texto;
+  aviso.classList.toggle('error', estadoMapaEsError);
+  aviso.hidden = !texto;
+  if (cerrar) {
+    cerrar.hidden = !estadoMapaEsError;
+  }
+}
+
+function actualizarIndicadorCarga() {
+  if (estadoMapaEsError) {
+    return;
+  }
+
+  let pendientes = 0;
+  for (const estado of bloques.values()) {
+    if (estado.cargando) {
+      pendientes += 1;
+    }
+  }
+
+  if (pendientes === 0) {
+    mostrarEstadoMapa('');
+    return;
+  }
+
+  mostrarEstadoMapa(
+    pendientes === 1 ? 'Cargando bloque 3D…' : `Cargando ${pendientes} bloques 3D…`
+  );
+}
+
+const cerrarEstadoMapa = document.getElementById('cerrar-estado-mapa');
+if (cerrarEstadoMapa) {
+  cerrarEstadoMapa.addEventListener('click', () => mostrarEstadoMapa(''));
 }
 
 let popupActivo = null;
@@ -146,14 +193,19 @@ function exageracionActual() {
 function aplicarTransformacion(id) {
   const estado = estadoBloque(id);
   const dato = indiceBloques?.[id];
-  if (!estado.grupo || !dato) {
+  if (!estado.grupo || !dato?.origen) {
+    return;
+  }
+
+  const { lon, lat, z_m } = dato.origen;
+  if (![lon, lat, z_m].every(Number.isFinite)) {
     return;
   }
 
   const exageracion = exageracionActual();
-  const altitud = terrenoActivo ? dato.origen.z_m * exageracion : 0;
+  const altitud = terrenoActivo ? z_m * exageracion : 0;
   const mercator = maplibregl.MercatorCoordinate.fromLngLat(
-    [dato.origen.lon, dato.origen.lat],
+    [lon, lat],
     altitud
   );
   const escala = mercator.meterInMercatorCoordinateUnits();
@@ -205,12 +257,18 @@ function mostrarEstadoBloque(id, texto, error = false) {
 async function cargarBloque(id) {
   const estado = estadoBloque(id);
   const dato = indiceBloques?.[id];
-  if (!dato || estado.cargando || estado.cargado) {
+  if (!dato?.archivo || estado.cargando || estado.cargado) {
+    return;
+  }
+
+  if (!gltfLoader) {
+    mostrarEstadoMapa('El cargador de modelos no está disponible.', true);
     return;
   }
 
   estado.cargando = true;
   mostrarEstadoBloque(id, 'cargando…');
+  actualizarIndicadorCarga();
 
   try {
     const gltf = await gltfLoader.loadAsync(dato.archivo);
@@ -220,6 +278,10 @@ async function cargarBloque(id) {
         mallas.push(objeto);
       }
     });
+
+    if (!mallas.length) {
+      throw new Error('El GLB no contiene mallas');
+    }
 
     const grupo = new THREE.Group();
     grupo.matrixAutoUpdate = false;
@@ -248,6 +310,7 @@ async function cargarBloque(id) {
     actualizarVisibilidadEdificiosOsm();
     mapa.triggerRepaint();
     mostrarEstadoBloque(id, '');
+    actualizarIndicadorCarga();
   } catch (error) {
     console.error(`No se pudo cargar el bloque ${id}`, error);
     estado.cargando = false;
@@ -259,6 +322,7 @@ async function cargarBloque(id) {
     }
     actualizarVisibilidadEdificiosOsm();
     mostrarEstadoBloque(id, 'error', true);
+    mostrarEstadoMapa(`No se pudo cargar el bloque ${id}.`, true);
   }
 }
 
@@ -305,6 +369,7 @@ function configurarPanelBloques() {
 
 async function iniciarBloques() {
   configurarPanelBloques();
+  mostrarEstadoMapa('Cargando datos de bloques 3D…');
 
   try {
     const respuesta = await fetch(URL_INDICE_BLOQUES);
@@ -313,11 +378,20 @@ async function iniciarBloques() {
     }
     const indice = await respuesta.json();
     indiceBloques = indice.bloques ?? {};
+    if (!Object.keys(indiceBloques).length) {
+      throw new Error('El índice de bloques está vacío');
+    }
   } catch (error) {
     console.error('No se pudo cargar el índice de bloques', error);
     for (const id of ORDEN_BLOQUES) {
       mostrarEstadoBloque(id, 'sin índice', true);
+      const casilla = document.querySelector(`input[data-bloque="${id}"]`);
+      if (casilla) {
+        casilla.checked = false;
+        casilla.disabled = true;
+      }
     }
+    mostrarEstadoMapa('No se pudo cargar el índice de bloques 3D.', true);
     return;
   }
 
@@ -343,6 +417,113 @@ async function iniciarBloques() {
   }
 
   actualizarVisibilidadEdificiosOsm();
+  actualizarIndicadorCarga();
+}
+
+async function cargarSitios(antesDe) {
+  let datos;
+  try {
+    const respuesta = await fetch(URL_SITIOS);
+    if (!respuesta.ok) {
+      throw new Error(`HTTP ${respuesta.status}`);
+    }
+    datos = await respuesta.json();
+    if (
+      datos?.type !== 'FeatureCollection' ||
+      !Array.isArray(datos.features) ||
+      !datos.features.length
+    ) {
+      throw new Error('El GeoJSON de sitios no es válido o está vacío');
+    }
+  } catch (error) {
+    console.error('No se pudieron cargar los sitios de interés', error);
+    mostrarEstadoMapa('No se pudieron cargar los sitios de interés.', true);
+    return;
+  }
+
+  mapa.addSource('sitios', {
+    type: 'geojson',
+    data: datos
+  });
+
+  mapa.addLayer({
+    id: 'sitios-puntos',
+    type: 'circle',
+    source: 'sitios',
+    paint: {
+      'circle-radius': 7,
+      'circle-color': '#33544a',
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff',
+      'circle-pitch-alignment': 'map'
+    }
+  }, antesDe);
+
+  mapa.addLayer({
+    id: 'sitios-etiquetas',
+    type: 'symbol',
+    source: 'sitios',
+    minzoom: 11,
+    layout: {
+      'text-field': ['get', 'nombre'],
+      'text-font': ['Noto Sans Bold'],
+      'text-size': 12,
+      'text-offset': [0, 1.1],
+      'text-anchor': 'top',
+      'text-max-width': 9,
+      'text-padding': 2
+    },
+    paint: {
+      'text-color': '#2b2f33',
+      'text-halo-color': '#ffffff',
+      'text-halo-width': 1.4
+    }
+  }, antesDe);
+
+  const casilla = document.getElementById('capa-sitios');
+  if (casilla && !casilla.checked) {
+    mapa.setLayoutProperty('sitios-puntos', 'visibility', 'none');
+    mapa.setLayoutProperty('sitios-etiquetas', 'visibility', 'none');
+  }
+
+  mapa.on('click', 'sitios-puntos', (evento) => {
+    const sitio = evento.features?.[0];
+    if (!sitio?.properties || !sitio.geometry?.coordinates) {
+      return;
+    }
+    const propiedades = sitio.properties;
+    const coordenadas = sitio.geometry.coordinates.slice();
+
+    if (popupActivo) {
+      popupActivo.remove();
+    }
+
+    popupActivo = new maplibregl.Popup({ offset: 12, maxWidth: '280px' })
+      .setLngLat(coordenadas)
+      .setHTML(
+        `<div class="popup">` +
+        `<h3>${escapar(propiedades.nombre)}</h3>` +
+        `<p class="popup-categoria">${escapar(propiedades.categoria)}</p>` +
+        `<p>${escapar(propiedades.descripcion)}</p>` +
+        `</div>`
+      )
+      .addTo(mapa);
+  });
+
+  mapa.on('mouseenter', 'sitios-puntos', () => {
+    mapa.getCanvas().style.cursor = 'pointer';
+  });
+
+  mapa.on('mouseleave', 'sitios-puntos', () => {
+    mapa.getCanvas().style.cursor = '';
+  });
+
+  mapa.on('error', (evento) => {
+    if (evento?.sourceId === 'sitios') {
+      console.error('Error en la fuente de sitios', evento.error);
+      mostrarEstadoMapa('No se pudieron cargar los sitios de interés.', true);
+    }
+  });
 }
 
 mapa.on('load', () => {
@@ -388,76 +569,13 @@ mapa.on('load', () => {
     }
   }, antesDe);
 
-  mapa.addSource('sitios', {
-    type: 'geojson',
-    data: 'layers/sitios.geojson'
+  cargarSitios(antesDe).catch((error) => {
+    console.error('No se pudo preparar la capa de sitios', error);
+    mostrarEstadoMapa('No se pudieron cargar los sitios de interés.', true);
   });
-
-  mapa.addLayer({
-    id: 'sitios-puntos',
-    type: 'circle',
-    source: 'sitios',
-    paint: {
-      'circle-radius': 7,
-      'circle-color': '#33544a',
-      'circle-stroke-width': 2,
-      'circle-stroke-color': '#ffffff',
-      'circle-pitch-alignment': 'map'
-    }
-  }, antesDe);
-
-  mapa.addLayer({
-    id: 'sitios-etiquetas',
-    type: 'symbol',
-    source: 'sitios',
-    minzoom: 11,
-    layout: {
-      'text-field': ['get', 'nombre'],
-      'text-font': ['Noto Sans Bold'],
-      'text-size': 12,
-      'text-offset': [0, 1.1],
-      'text-anchor': 'top',
-      'text-max-width': 9,
-      'text-padding': 2
-    },
-    paint: {
-      'text-color': '#2b2f33',
-      'text-halo-color': '#ffffff',
-      'text-halo-width': 1.4
-    }
-  }, antesDe);
 
   mapa.setTerrain({ source: 'terreno', exaggeration: EXAGERACION_INICIAL });
   mapa.addLayer(crearCapaBloques(), antesDe);
-
-  mapa.on('click', 'sitios-puntos', (evento) => {
-    const sitio = evento.features[0];
-    const propiedades = sitio.properties;
-    const coordenadas = sitio.geometry.coordinates.slice();
-
-    if (popupActivo) {
-      popupActivo.remove();
-    }
-
-    popupActivo = new maplibregl.Popup({ offset: 12, maxWidth: '280px' })
-      .setLngLat(coordenadas)
-      .setHTML(
-        `<div class="popup">` +
-        `<h3>${escapar(propiedades.nombre)}</h3>` +
-        `<p class="popup-categoria">${escapar(propiedades.categoria)}</p>` +
-        `<p>${escapar(propiedades.descripcion)}</p>` +
-        `</div>`
-      )
-      .addTo(mapa);
-  });
-
-  mapa.on('mouseenter', 'sitios-puntos', () => {
-    mapa.getCanvas().style.cursor = 'pointer';
-  });
-
-  mapa.on('mouseleave', 'sitios-puntos', () => {
-    mapa.getCanvas().style.cursor = '';
-  });
 
   const capaEdificios = document.getElementById('capa-edificios');
   const capaTerreno = document.getElementById('capa-terreno');
@@ -506,6 +624,9 @@ mapa.on('load', () => {
   });
 
   capaSitios.addEventListener('change', (evento) => {
+    if (!mapa.getLayer('sitios-puntos') || !mapa.getLayer('sitios-etiquetas')) {
+      return;
+    }
     const visibilidad = evento.target.checked ? 'visible' : 'none';
     mapa.setLayoutProperty('sitios-puntos', 'visibility', visibilidad);
     mapa.setLayoutProperty('sitios-etiquetas', 'visibility', visibilidad);

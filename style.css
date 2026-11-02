@@ -36,11 +36,53 @@ body {
   width: 264px;
   max-height: calc(100% - 32px);
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 18px;
   background: var(--panel);
   border: 1px solid var(--borde);
   border-radius: 6px;
   box-shadow: 0 4px 16px rgba(38, 43, 47, 0.12);
+}
+
+.estado-mapa {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: min(90vw, 380px);
+  padding: 9px 14px;
+  transform: translateX(-50%);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #ffffff;
+  text-align: center;
+  background: rgba(38, 43, 47, 0.92);
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(38, 43, 47, 0.25);
+  pointer-events: none;
+}
+
+.estado-mapa[hidden] {
+  display: none;
+}
+
+.estado-mapa.error {
+  background: rgba(122, 42, 31, 0.95);
+  pointer-events: auto;
+}
+
+.estado-mapa-cerrar {
+  padding: 0 2px;
+  font-size: 1rem;
+  line-height: 1;
+  color: #ffffff;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
 }
 
 .panel-encabezado h1 {
@@ -183,5 +225,20 @@ input[type="range"]:disabled {
     width: auto;
     max-height: 42vh;
     padding: 14px;
+  }
+
+  .campo input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .estado-mapa {
+    bottom: 46px;
+    font-size: 0.74rem;
+  }
+
+  .maplibregl-ctrl-attrib {
+    max-width: calc(100% - 130px);
+    font-size: 10px;
   }
 }

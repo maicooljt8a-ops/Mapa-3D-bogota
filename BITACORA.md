@@ -221,4 +221,26 @@
 - **Problemas encontrados:** Ninguno.
 - **Pendientes:** Hacer push a `main` y validar el despliegue en GitHub Pages.
 
+## 2026-11-02 10:42 — Mejoras de interfaz y manejo de errores del mapa
+
+- **Proveedor y modelo:** DeepSeek V4.1 Flash Free (OpenCode)
+- **Agente:** Build
+- **Prompt resumido:** Revisar solo el código de `main.js`, `index.html` y `style.css` para detectar errores o riesgos en carga de GLB/GeoJSON, indicador de carga, orientación/escala, atribución, nota de alturas y diseño responsivo; aplicar mejoras y hacer un commit local sin push.
+- **Riesgos encontrados:**
+  - Si fallaba el índice de bloques, las casillas seguían activas y podían ocultar los edificios OSM sin cargar ningún GLB.
+  - Una carga GLB vacía se marcaba como exitosa; no había indicador global de progreso ni mensaje visible de error.
+  - La fuente GeoJSON se agregaba sin validar la respuesta y sus errores quedaban solo en la consola; los eventos de sitios podían registrar capas aún inexistentes.
+  - La atribución estaba en modo compacto (podía quedar oculta), la nota de alturas era ambigua y los controles móviles eran pequeños.
+  - La transformación de los bloques asumía coordenadas válidas del índice sin comprobarlas.
+- **Qué se hizo:**
+  - `index.html`: aviso de estado con `aria-live` y botón de cierre; nota de alturas más explícita.
+  - `style.css`: estilos del aviso de carga/error, cierre accesible, `overscroll-behavior`, controles móviles más grandes, atribución responsive y límites de ancho.
+  - `main.js`: validación del índice y de las coordenadas de origen; detección de GLB sin mallas; indicador global de bloques en carga; errores visibles con cierre; casillas deshabilitadas si falta el índice; carga del GeoJSON con `fetch`, validación de `FeatureCollection`, manejo de errores y eventos solo después de crear las capas.
+  - Atribución visible (`compact: false`) incluyendo OpenFreeMap, OpenStreetMap, Overture Maps y AWS Terrain Tiles.
+  - Orientación/escala revisadas: se mantiene la rotación X de 90° para GLB Y-up, la escala por origen Mercator y el ajuste de altitud; se añadieron guardas para datos no finitos.
+  - Verificación: `node --check main.js` y `git diff --check` sin errores; sin pruebas de navegador ni capturas.
+  - Commit local: `Mejoras de interfaz del mapa`.
+- **Problemas encontrados:** Ninguno bloqueante.
+- **Pendientes:** Validar visualmente en navegador cuando el usuario lo autorice y confirmar el despliegue en GitHub Pages.
+
 

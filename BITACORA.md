@@ -243,4 +243,57 @@
 - **Problemas encontrados:** Ninguno bloqueante.
 - **Pendientes:** Validar visualmente en navegador cuando el usuario lo autorice y confirmar el despliegue en GitHub Pages.
 
+## 2026-11-02 11:04 — Historial de salidas de Blender en la bitácora
+
+- **Proveedor y modelo:** DeepSeek V4.1 Flash Free (OpenCode)
+- **Agente:** Build
+- **Prompt resumido:** Reconstruir el historial de salidas de Blender leyendo BITACORA.md, git log, `renders/`, `scripts/`, `models/` y los `.blend`/`.blend1`; crear tablas cronológicas, marcar la salida actual y las anteriores, añadir los prompts clave, verificar tamaños, `.gitignore` y hacer un commit local sin push.
+- **Qué se hizo:**
+  - Revisión de 14 filas de salidas: 8 GLB (7 archivos actuales y una versión SE reemplazada), 2 renders, 3 estados documentados de `bogota.blend` y el respaldo `.blend1`.
+  - Se usaron fechas de modificación y tamaños reales para los archivos presentes; para versiones reemplazadas se usó la fecha y el tamaño documentados en esta bitácora.
+  - Git solo tiene commits desde el 2026-11-02; no conserva versiones anteriores de los modelos. Por eso el historial anterior al primer commit se reconstruyó con la bitácora y el sistema de archivos.
+  - `BITACORA.md` no está en `.gitignore` y pesa 0,02 MiB. Ningún archivo versionado supera 50 MB: el mayor es `models/bloques/bloque_sw.glb` (3,88 MiB). Las fuentes locales ignoradas (`data/`, `bogota.blend` y `bogota.blend1`, de 57,09 MiB) sí superan 50 MB, pero no se versionan.
+  - Commit local: `Historial de salidas de Blender en bitácora`.
+- **Problemas encontrados:** No hay registro que explique el guardado actual de `models/bogota.blend` (57,09 MB) ni su respaldo; esos datos se marcan como «no verificable».
+- **Pendientes:** Validar el historial con el usuario y actualizarlo cuando se generen nuevas salidas.
+
+## Historial de salidas de Blender
+
+Notas de lectura:
+
+- **Actual:** los cuatro GLB de `models/bloques/` y `models/bogota_completo.glb`.
+- **Anterior:** salida documentada que ya fue reemplazada o que pertenece a una etapa previa.
+- Las filas marcadas **documentada** no tienen archivo actual con esa fecha porque fueron reemplazadas; su tamaño y fecha provienen de las entradas de esta bitácora.
+- «Pages» indica si el workflow copia el archivo a `_site`: solo se publican los cuatro GLB de `models/bloques/`.
+
+| Fecha | Archivo de salida | MB | Script o prompt que la generó | Qué cambió respecto a la anterior | Estado | Pages |
+|---|---|---:|---|---|---|---|
+| 2026-10-30 19:39:52 | `models/bogota.glb` | 0,83 | `scripts/generar_blender.py` — Fase 2 (prompt 2026-10-30 19:40) | Primera salida: 4.307 edificios, terreno de 197.505 vértices, 20 primitivas con Draco | Anterior | No |
+| 2026-10-30 19:40 (documentada) | `models/bogota.blend` | 6,63 | `scripts/generar_blender.py` — Fase 2 | Escena fuente inicial; después reemplazada por la versión de Partes A/B | Anterior (reemplazada) | No |
+| 2026-10-30 20:51:16 | `models/bogota_completo.glb` | 2,44 | `scripts/generar_blender.py` — Partes A/B (prompt 2026-10-30 20:59) | Escena ampliada: 11.296 edificios Overture, vías, agua, zonas verdes, 3.000 árboles y dos cámaras | **Actual** | No |
+| 2026-10-30 20:51:17 | `models/bogota_capas.glb` | 1,38 | `scripts/generar_blender.py` — Partes A/B | Exportación por capas de la misma escena; 7/7 primitivas con Draco | Anterior | No |
+| 2026-10-30 20:58:06 | `renders/bogota_aerea.png` | 1,77 | `scripts/generar_blender.py` — Partes A/B, cámara general | Primer render aéreo; se corrigió encuadre, exposición y dirección solar | Anterior | No |
+| 2026-10-30 20:58:10 | `renders/bogota_centro.png` | 2,07 | `scripts/generar_blender.py` — Partes A/B, cámara de detalle | Render de detalle; misma escena que el aéreo y encuadre corregido | Anterior | No |
+| 2026-10-30 20:59 (documentada) | `models/bogota.blend` | 7,91 | `scripts/generar_blender.py` — Partes A/B | Escena completa de Partes A/B; reemplazada por el archivo actual de 57,09 MB | Anterior (reemplazada) | No |
+| 2026-10-31 13:48 (documentada) | `models/bloques/bloque_se.glb` | 4,99 | `scripts/generar_bloque.py` (prompt 2026-10-31 13:48) | Primer bloque SE: 47.667 edificios y 6.749 vías; reemplazado por la versión optimizada | Anterior (reemplazada) | No |
+| 2026-10-31 14:04:53 | `models/bloques/bloque_se.glb` | 1,38 | `scripts/generar_bloque.py` actualizado (prompt 2026-10-31 14:05) | Huellas simplificadas con RDP 0,5 m, vértices fusionados y GLB sin normales; 4,99 -> 1,38 MB (-72,4 %) | **Actual** | Sí |
+| 2026-10-31 14:17:02 | `models/bloques/bloque_sw.glb` | 3,88 | `scripts/generar_bloque.py` en headless (prompt 2026-10-31 14:19) | Bloque SW con el script optimizado: 153.902 edificios y 1.705.530 posiciones | **Actual** | Sí |
+| 2026-10-31 14:18:06 | `models/bloques/bloque_nw.glb` | 3,37 | `scripts/generar_bloque.py` en headless | Bloque NW: 133.768 edificios y 1.503.890 posiciones | **Actual** | Sí |
+| 2026-10-31 14:19:00 | `models/bloques/bloque_ne.glb` | 2,70 | `scripts/generar_bloque.py` en headless | Bloque NE: 98.620 edificios y 1.179.830 posiciones; verificado por MCP | **Actual** | Sí |
+| 2026-10-31 16:03:00 | `models/bogota.blend1` | 57,09 | No verificable (respaldo automático de Blender) | Respaldo de la versión anterior de `bogota.blend`; contenido y origen no verificables | Respaldo | No |
+| 2026-10-31 16:18:58 | `models/bogota.blend` | 57,09 | No verificable | Crecimiento frente a los 7,91 MB documentados; no hay entrada que explique este guardado | Trabajo actual (no publicado) | No |
+
+### Prompts clave usados con OpenCode
+
+| Fecha | Proveedor/modelo | Prompt resumido, tal como figura en la bitácora |
+|---|---|---|
+| 2026-10-30 19:40 | DeepSeek V4.1 Flash Free (OpenCode) | Generar el modelo 3D de Bogotá desde `data/edificios.geojson` y `data/dem.npy`, con origen local en (-74.0625, 4.610), terreno mallado, edificios extruidos y apoyados, materiales rosado–vino, y exportar GLB con Draco y BLEND. |
+| 2026-10-30 20:59 | DeepSeek V4.1 Flash Free (OpenCode) | Parte A: descargar Overture, comparar con OSM, descargar vías/agua/zonas verdes, estimar alturas y recortar. Parte B: generar la escena completa en Blender, exportar GLB con Draco y render aéreo. Registrar todo en `BITACORA.md`, incluida la comparación OSM vs Overture y los problemas encontrados. |
+| 2026-10-31 13:48 | DeepSeek V4.1 Flash Free (OpenCode) | Generar solo el bloque SE con Blender, usando `bloque_se.geojson` y vías recortadas, alturas existentes, edificios blancos y vías gris oscuro, sin terreno ni árboles; origen en el centro del bloque, índice en `models/bloques/index.json`, GLB con Draco y script reutilizable en headless. |
+| 2026-10-31 14:05 | DeepSeek V4.1 Flash Free (OpenCode) | Optimizar `bloque_se.glb` sin cambiar su aspecto: simplificar huellas (tolerancia 0,5 m), fusionar vértices duplicados, reexportar con Draco sin normales ni atributos innecesarios, reportar vértices y tamaño, actualizar `scripts/generar_bloque.py` y no generar otros bloques. |
+| 2026-10-31 14:19 | DeepSeek V4.1 Flash Free (OpenCode) | Generar SW, NW y NE en headless, uno por uno, con las opciones optimizadas de SE; reportar edificios reales/estimados, vértices y tamaño; actualizar el índice de los cuatro bloques; importar solo NE por MCP en una colección nueva para verificar; registrar todo. |
+| 2026-11-02 09:59 | DeepSeek V4.1 Flash Free (OpenCode) | En `main.js`, ocultar la capa `edificios-3d` del estilo base cuando algún bloque GLB esté activo y mostrarla al desactivarlos todos; añadir `polygonOffset` (factor 1, units 1) al material de edificios de three.js y usar un blanco hueso más claro; no probar en navegador; registrar en `BITACORA.md`. |
+
+El proveedor/modelo de todas las entradas anteriores es **DeepSeek V4.1 Flash Free (OpenCode)**, tal como figura en cada registro.
+
 

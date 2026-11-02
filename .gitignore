@@ -6,7 +6,7 @@ __pycache__/
 # Datos y scripts de trabajo
 data/
 scripts/
-renders/
+/renders/
 Modelfile
 
 # Blender

@@ -312,4 +312,19 @@ El proveedor/modelo de todas las entradas anteriores es **DeepSeek V4.1 Flash Fr
 - **Problemas encontrados:** `gh` no está instalado en el equipo; el estado del workflow se obtuvo de la API pública de GitHub Actions.
 - **Pendientes:** Ninguno.
 
+## 2026-11-02 12:05 — Galería de renders en el README
+
+- **Proveedor y modelo:** DeepSeek V4.1 Flash Free (OpenCode)
+- **Agente:** Build
+- **Prompt resumido:** Copiar las imágenes de `renders/` a `docs/renders`, optimizar las que superen 2 MB, revisar `.gitignore`, añadir una sección «Galería» al `README.md` con títulos y descripciones en español, y hacer commit y push a `main`.
+- **Qué se hizo:**
+  - `docs/renders/bogota_aerea.png`: copia directa de 1.852.295 bytes (1,77 MiB), por debajo de 2 MB.
+  - `docs/renders/bogota_centro.jpg`: versión optimizada del PNG de 2.169.510 bytes (2,07 MiB); se guardó como JPG calidad 85, optimizado y progresivo, en 237.507 bytes (0,23 MiB).
+  - `.gitignore`: la regla `renders/` se ancló como `/renders/` para seguir ignorando la carpeta de trabajo de la raíz sin excluir `docs/renders/`.
+  - `README.md`: nueva sección **Galería** con «Vista aérea» y «Centro de Bogotá», sus imágenes y descripciones en español.
+  - Verificación: `git check-ignore` confirmó que las imágenes de `docs/renders` no están ignoradas.
+  - Commit local: `Galería de renders en el README`.
+- **Problemas encontrados:** Ninguno.
+- **Pendientes:** Verificar el despliegue del workflow tras el push a `main`.
+
 

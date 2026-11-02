@@ -7,6 +7,20 @@ Mapa web 3D interactivo de Bogotá construido con MapLibre GL JS y three.js. El 
 - Repositorio: [github.com/maicooljt8a-ops/Mapa-3D-bogota](https://github.com/maicooljt8a-ops/Mapa-3D-bogota)
 - Sitio publicado: [maicooljt8a-ops.github.io/Mapa-3D-bogota](https://maicooljt8a-ops.github.io/Mapa-3D-bogota/)
 
+## Galería
+
+### Vista aérea
+
+![Vista aérea del modelo 3D de Bogotá](docs/renders/bogota_aerea.png)
+
+Vista general del terreno y de los bloques de edificios que cubren la zona ampliada de Bogotá.
+
+### Centro de Bogotá
+
+![Detalle del centro de Bogotá](docs/renders/bogota_centro.jpg)
+
+Acercamiento al centro histórico, con los edificios y las vías principales del modelo.
+
 ## Fuentes de datos
 
 - **Overture Maps** para las huellas de edificios.

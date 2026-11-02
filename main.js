@@ -390,7 +390,7 @@ mapa.on('load', () => {
 
   mapa.addSource('sitios', {
     type: 'geojson',
-    data: 'data/sitios.geojson'
+    data: 'layers/sitios.geojson'
   });
 
   mapa.addLayer({

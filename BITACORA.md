@@ -206,4 +206,19 @@
 - **Problemas encontrados:** `data/sitios.geojson` no se copia a `_site` según lo indicado, por lo que la capa de sitios de interés no cargará en Pages. Si se quiere conservar, habría que incorporar el GeoJSON a `main.js` o incluirlo explícitamente en el artefacto. Git no tenía identidad configurada; el commit se creó con una identidad puntual (`maico <maico@localhost>`) sin modificar la configuración del repositorio ni la global.
 - **Pendientes:** Hacer push a `main`, habilitar GitHub Pages con origen GitHub Actions y validar el despliegue.
 
+## 2026-11-02 10:20 — Incluir la capa de sitios en el despliegue
+
+- **Proveedor y modelo:** DeepSeek V4.1 Flash Free (OpenCode)
+- **Agente:** Build
+- **Prompt resumido:** Copiar `data/sitios.geojson` a `layers/sitios.geojson`, cargarlo desde `main.js` con ruta relativa, incluir `layers/` en la verificación y la copia a `_site` del workflow, y hacer un commit local sin push.
+- **Qué se hizo:**
+  - Copia de `data/sitios.geojson` a `layers/sitios.geojson` (2998 bytes); `data/` sigue fuera de Git.
+  - `main.js`: la fuente `sitios` ahora carga `layers/sitios.geojson`.
+  - `.github/workflows/deploy.yml`: la verificación incluye `layers/sitios.geojson` y la preparación de `_site` crea `_site/layers` y copia su contenido.
+  - `README.md` actualizado con la nueva ruta y el contenido publicado.
+  - Verificación: `node --check main.js` correcto y YAML del workflow parseado sin errores.
+  - Commit local: `Incluir capa de sitios`.
+- **Problemas encontrados:** Ninguno.
+- **Pendientes:** Hacer push a `main` y validar el despliegue en GitHub Pages.
+
 

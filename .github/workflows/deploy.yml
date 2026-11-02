@@ -24,9 +24,9 @@ jobs:
       - name: Descargar el repositorio
         uses: actions/checkout@v4
 
-      - name: Verificar bloques GLB
+      - name: Verificar archivos obligatorios
         run: |
-          archivos="models/bloques/index.json models/bloques/bloque_sw.glb models/bloques/bloque_se.glb models/bloques/bloque_nw.glb models/bloques/bloque_ne.glb"
+          archivos="models/bloques/index.json models/bloques/bloque_sw.glb models/bloques/bloque_se.glb models/bloques/bloque_nw.glb models/bloques/bloque_ne.glb layers/sitios.geojson"
           for archivo in $archivos; do
             if [ ! -f "$archivo" ]; then
               echo "Falta el archivo obligatorio: $archivo"
@@ -37,9 +37,10 @@ jobs:
       - name: Preparar el sitio
         run: |
           rm -rf _site
-          mkdir -p _site/models/bloques
+          mkdir -p _site/models/bloques _site/layers
           cp index.html main.js style.css _site/
           cp -R models/bloques/. _site/models/bloques/
+          cp -R layers/. _site/layers/
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5

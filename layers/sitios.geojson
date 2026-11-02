@@ -1,0 +1,101 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Monserrate",
+        "categoria": "Mirador",
+        "descripcion": "Santuario en lo alto de los cerros orientales, a 3.152 m, con vista panorámica de toda la ciudad."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0558, 4.6057]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Plaza de Bolívar",
+        "categoria": "Histórico",
+        "descripcion": "Corazón político y colonial de Bogotá, rodeado por la Catedral Primada, el Capitolio y el Palacio de Justicia."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0761, 4.5981]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Museo del Oro",
+        "categoria": "Museo",
+        "descripcion": "Colección de orfebrería prehispánica del Banco de la República, una de las más importantes de América."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0719, 4.6019]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Parque Simón Bolívar",
+        "categoria": "Parque",
+        "descripcion": "Parque metropolitano de 113 hectáreas con lago, ciclorrutas, escenarios deportivos y conciertos."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0935, 4.6583]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Usaquén",
+        "categoria": "Barrio",
+        "descripcion": "Antiguo pueblo con plaza colonial, mercado de pulgas de fin de semana y una amplia oferta gastronómica."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0308, 4.6953]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Biblioteca Virgilio Barco",
+        "categoria": "Cultural",
+        "descripcion": "Obra del arquitecto Rogelio Salmona junto al Parque Simón Bolívar, reconocida por su arquitectura en ladrillo."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0744, 4.6573]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Jardín Botánico José Celestino Mutis",
+        "categoria": "Parque",
+        "descripcion": "19 hectáreas de colecciones vivas de flora andina y el Tropicario, dedicado a la biodiversidad colombiana."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0984, 4.6676]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Cerro de Guadalupe",
+        "categoria": "Mirador",
+        "descripcion": "Mirador natural al oriente de Bogotá, a 3.260 m, con vistas del casco urbano y los cerros orientales."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.0540, 4.5880]
+      }
+    }
+  ]
+}

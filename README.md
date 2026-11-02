@@ -21,4 +21,4 @@ Las alturas de los edificios son en su mayoría estimadas a partir de la huella 
 
 ## Publicación
 
-El flujo de GitHub Actions se dispara con cada push a `main` o manualmente desde la pestaña **Actions**. Antes de publicar verifica que existan `models/bloques/index.json` y los cuatro archivos `.glb`, copia a `_site` solo `index.html`, `main.js`, `style.css` y `models/bloques/`, y despliega ese artefacto en GitHub Pages.
+El flujo de GitHub Actions se dispara con cada push a `main` o manualmente desde la pestaña **Actions**. Antes de publicar verifica que existan `models/bloques/index.json`, los cuatro archivos `.glb` y `layers/sitios.geojson`, copia a `_site` solo `index.html`, `main.js`, `style.css`, `models/bloques/` y `layers/`, y despliega ese artefacto en GitHub Pages.
